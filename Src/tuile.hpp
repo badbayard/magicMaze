@@ -1,0 +1,86 @@
+#ifndef MMAZE_TUILE_HPP
+#define MMAZE_TUILE_HPP
+
+#include "case.hpp"
+#include "mur.hpp"
+#include "melangeur.hpp"
+
+#include <vector>
+#include <iostream>
+#include <set>
+#include <queue>
+
+namespace MMaze {
+
+  struct Site{
+    int index;
+    int contenu;
+  };
+
+  struct CaseUF{
+    int index;
+    CaseUF* rep;
+  };
+
+  struct CaseGraph{
+    int index;
+    std::vector<int>voisins;
+  };
+
+  struct Graph{
+    CaseGraph graph[16];
+  };
+
+  class Tuile {
+
+  public :
+	
+
+    Tuile() ;
+
+    ~Tuile() ; 
+
+    Tuile(bool _tuile_depart,Melangeur objectifs);
+
+    //indique si deux cases voisines sont separees par un mur
+    bool mur(Mur m) const ;
+
+    //indique si une case est accessible depuis les portes ou non
+    bool accessible(Case c) const ;
+
+    //affichage
+    friend std::ostream& operator<<(std::ostream& out, const Tuile& t) ;
+
+    void setup_tuile();
+
+    void relierSites(std::vector<CaseUF*> tab);
+		
+    CaseUF* find(CaseUF* _case);
+		
+    void _union(CaseUF* case1,CaseUF* case2);
+
+    bool estRelie(std::vector<CaseUF*> tab);
+
+    void stockage_chemin(CaseUF* case_src);
+
+    void dijkstra(int case_src,int case_arrivee);
+
+    Graph creerGraph();
+		
+
+  private :
+		
+    bool tuile_depart;
+    int porte_acces;
+    bool murs[24];
+    std::vector<Site>sites;
+		
+	
+    //affichage
+    void afficher_horizontal(std::ostream& out, unsigned int i) const ;
+    void afficher_vertical(std::ostream& out, unsigned int i) const ;
+  } ;
+
+} //end of namespace MMaze
+
+#endif

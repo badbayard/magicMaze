@@ -1,0 +1,40 @@
+# defaults
+image: patkub/docker-make-valgrind
+cache:
+  untracked: true
+
+########## melangeur ##########
+
+melangeur-build:
+  stage: build
+  script:
+    - cd Src
+    - make test_melangeur
+  artifacts:
+    paths:
+      - Src/test_melangeur
+
+melangeur-test:
+  stage: test
+  script:
+    - valgrind --leak-check=full --error-exitcode=1 Src/test_melangeur
+  dependencies:
+    - melangeur-build
+
+########## tuile ##########
+
+tuile-build:
+  stage: build
+  script:
+    - cd Src
+    - make test_tuile
+  artifacts:
+    paths:
+      - Src/test_tuile
+
+tuile-test:
+  stage: test
+  script:
+    - valgrind --leak-check=full --error-exitcode=1 Src/test_tuile
+  dependencies:
+    - tuile-build
